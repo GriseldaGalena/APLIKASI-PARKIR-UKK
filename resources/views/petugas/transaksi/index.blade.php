@@ -1,16 +1,45 @@
 <x-layouts.app :title="__('Transaksi')">
-    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
+
+<!-- {{-- Header --}}
+    <div class="mb-6 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 p-6 text-white shadow-md">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <flux:heading size="xl" class="text-white">
+                    Data User
+                </flux:heading>
+                <p class="mt-1 text-sm text-blue-100">
+                    Kelola data user aplikasi SiParkir.
+                </p>
+            </div>
+
+            <a href="{{ route('admin.users.create') }}"
+               wire:navigate.hover
+               class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-blue-600
+                      hover:bg-blue-50 transition">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Tambah User
+            </a>
+        </div>
+    </div> -->
+
+    <div class="mb-6 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-400 p-6 text-white shadow-md">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <flux:heading size="xl">Transaksi</flux:heading>
-            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+            <flux:heading size="xl" class="text-white">
+                Transaksi
+            </flux:heading>
+            <p class="mt-1 text-sm text-blue-100">
                 Kelola transaksi kendaraan masuk dan keluar parkir
             </p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-2">
+
             <a href="{{ route('petugas.transaksi.create') }}" wire:navigate.hover
-                class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-blue-600
+                      hover:bg-blue-50 transition">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
                 Kendaraan Masuk
             </a>

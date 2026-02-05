@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Dashboard')">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
         <div>
-            <flux:heading size="xl">Dashboard</flux:heading>
+            <flux:heading size="xl">Selamat Datang di SiParkir!👋</flux:heading>
             <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
                 Rekap dan statistik sistem parkir
             </p>
@@ -119,7 +119,7 @@
     <!-- Admin Only Stats -->
     @if($user->role === 'admin')
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <!-- Statistik Per Petugas -->
+        <!-- Statistik Per Petugas-->
         <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700 p-6">
             <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Statistik Per Petugas</h3>
             <div class="space-y-3">

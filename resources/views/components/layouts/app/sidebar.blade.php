@@ -15,7 +15,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-blue-200 bg-blue-100 dark:border-blue-700 dark:bg-blue-900">
         <flux:sidebar.header class="px-4 py-4">
     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/90">
@@ -34,7 +34,7 @@
 
         <div class="leading-tight">
             <div class="text-lg font-bold tracking-wide text-blue-600">
-                Si<span class="text-yellow-400">Parkir</span>
+                Si<span class="text-gray-800">Parkir</span>
             </div>
             <div class="text-xs text-gray-500">
                 Parking System

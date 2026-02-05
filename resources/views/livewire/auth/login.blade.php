@@ -1,10 +1,10 @@
 <x-layouts.auth>
-    <div class="flex flex-col gap-6 -mt-10">
+    <div class="flex flex-col gap-8 -mt-6 bg-white/90 backdrop-blur p-8 rounded-3xl shadow-2xl">
 
-        {{-- Branding TANPA LOGO --}}
-        <div class="text-center mb-2">
-            <h1 class="text-4xl font-extrabold tracking-wide text-blue-600">
-                Si<span class="text-yellow-400">Parkir</span>
+        {{-- Branding --}}
+        <div class="text-center">
+            <h1 class="text-4xl font-extrabold tracking-tight text-blue-600">
+                Si<span class="text-gray-800">Parkir</span>
             </h1>
             <p class="text-sm text-gray-500 mt-1">
                 Parking System
@@ -17,7 +17,7 @@
                 Masuk ke akun Anda
             </h2>
             <p class="text-sm text-gray-500 mt-1">
-                Silakan login untuk mengakses sistem parkir
+                Kelola sistem parkir dengan aman dan cepat
             </p>
         </div>
 
@@ -67,24 +67,11 @@
             <flux:button
                 variant="primary"
                 type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-[1.02]"
             >
                 Masuk
             </flux:button>
         </form>
 
-        {{-- Register --}}
-        @if (Route::has('register'))
-            <p class="text-center text-sm text-gray-600">
-                Belum punya akun?
-                <flux:link
-                    class="text-blue-600 hover:underline"
-                    :href="route('register')"
-                    wire:navigate
-                >
-                    Daftar
-                </flux:link>
-            </p>
-        @endif
     </div>
 </x-layouts.auth>

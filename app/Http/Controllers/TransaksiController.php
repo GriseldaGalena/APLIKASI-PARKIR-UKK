@@ -181,7 +181,7 @@ class TransaksiController extends Controller
 
             $log = LogAktivitas::create([
                 'id_user' => Auth::user()->id,
-                'aktivitas' => 'Memperbarui transaksi ID ' . $id,
+                'aktivitas' => 'Memperbarui transaksi ID' . $id,
                 'waktu_aktivitas' => now()
             ]);
 
