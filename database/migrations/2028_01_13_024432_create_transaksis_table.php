@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('biaya_total', 10, 0)->nullable();
             $table->enum('status', ['masuk', 'keluar'])->default('masuk');
             $table->foreignId('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('id_area')->references('id')->on('area__parkirs')->onDelete('cascade');
+            $table->foreignId('id_area')->references('id')->on('area_parkirs')->onDelete('cascade');
             $table->timestamps();
         });
     }

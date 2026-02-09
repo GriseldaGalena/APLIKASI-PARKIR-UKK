@@ -4,8 +4,8 @@
     <flux:heading class="sr-only">{{ __('Two-Factor Authentication Settings') }}</flux:heading>
 
     <x-settings.layout
-        :heading="__('Two Factor Authentication')"
-        :subheading="__('Manage your two-factor authentication settings')"
+        :heading="__('Otentikasi Dua Faktor')"
+        :subheading="__('Kelola pengaturan autentikasi dua faktor Anda')"
     >
         <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
             @if ($twoFactorEnabled)
@@ -38,7 +38,7 @@
                     </div>
 
                     <flux:text variant="subtle">
-                        {{ __('When you enable two-factor authentication, you will be prompted for a secure pin during login. This pin can be retrieved from a TOTP-supported application on your phone.') }}
+                        {{ __('Saat Anda mengaktifkan otentikasi dua faktor, Anda akan dimintai pin aman saat login. Pin ini dapat diambil dari aplikasi yang mendukung TOTP di ponsel Anda.') }}
                     </flux:text>
 
                     <flux:button

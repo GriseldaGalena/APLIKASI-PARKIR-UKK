@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->enum('jenis_kendaraan', ['motor', 'mobil', 'lainnya']);
             $table->decimal('tarif_per_jam', 10, 0);
+            $table->foreignId('area_parkir_id')->references('id')->on('area_parkirs')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,3 +28,4 @@ return new class extends Migration
         Schema::dropIfExists('tarifs');
     }
 };
+

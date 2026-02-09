@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AreaParkir;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
 
@@ -9,7 +10,7 @@ class TarifParkirController extends Controller
 {
     public function index()
     {
-        $tarifs = Tarif::paginate(10);
+        $tarifs = Tarif::with('areaParkir')->paginate(10);
         return view('admin.tarif_parkir.index', [
             'tarifs' => $tarifs
         ]);
@@ -17,14 +18,18 @@ class TarifParkirController extends Controller
 
     public function create()
     {
-        return view('admin.tarif_parkir.create');
+        $area = AreaParkir::all();
+        return view('admin.tarif_parkir.create', [
+            'areaParkir' => $area
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'jenis_kendaraan' => 'required|in:mobil,motor,lainnya',
-            'tarif_per_jam' => 'required|numeric|min:0'
+            'tarif_per_jam' => 'required|numeric|min:0',
+            'area_parkir_id' => 'required|exists:area_parkirs,id'
         ]);
 
         

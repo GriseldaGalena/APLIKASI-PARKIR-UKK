@@ -41,6 +41,24 @@
                     Pilih jenis kendaraan yang akan dikenakan tarif.
                 </p>
             </div>
+            <div>
+                <label for="area_parkir_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Area Parkir <span class="text-red-500">*</span>
+                </label>
+                <select name="area_parkir_id" id="area_parkir_id"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                    <option value="">Pilih Area Parkir</option>
+                    @foreach ($areaParkir as $a)
+                    <option value="{{ $a->id }}">{{ $a->nama_area }}</option>
+                    @endforeach
+                </select>
+                @error('area_parkir_id')
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Pilih area parkir.
+                </p>
+            </div>
 
             {{-- Tarif per Jam --}}
             <div>

@@ -33,19 +33,19 @@
                 <thead class="bg-neutral-50 dark:bg-neutral-900/40
                               border-b border-neutral-200 dark:border-neutral-700">
                     <tr>
-                        <th class="px-6 py-3 w-16 text-left text-xs font-medium text-neutral-500 uppercase">
+                        <th class="px-6 py-3 w-16 text-center text-xs font-medium text-neutral-500 uppercase">
                             No
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">
+                        <th class="px-6 py-3 text-center text-xs font-medium text-neutral-500 uppercase">
                             User
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">
+                        <th class="px-6 py-3 text-center text-xs font-medium text-neutral-500 uppercase">
                             Aktivitas
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">
+                        <th class="px-6 py-3 text-center text-xs font-medium text-neutral-500 uppercase">
                             Waktu
                         </th>
-                        <th class="px-6 py-3 w-32 text-left text-xs font-medium text-neutral-500 uppercase">
+                        <th class="px-6 py-3 w-32 text-center text-xs font-medium text-neutral-500 uppercase">
                             Aksi
                         </th>
                     </tr>

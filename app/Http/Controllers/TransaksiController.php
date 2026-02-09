@@ -36,13 +36,29 @@ class TransaksiController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        return view('petugas.transaksi.create', [
-            'kendaraans' => Kendaraan::all(),
-            'tarifs' => Tarif::all(),
-            'areas' => AreaParkir::whereColumn('terisi', '<', 'kapasitas')->get()
-        ]);
-    }
+{
+    // Ambil area dari query
+    $areaId = request()->query('area', null);
+
+    return view('petugas.transaksi.create', [
+
+        // Semua kendaraan
+        'kendaraans' => Kendaraan::all(),
+
+        // Tarif sesuai area
+        'tarifs' => Tarif::where('area_parkir_id', $areaId)->get(),
+
+        // Area yang masih tersedia
+        'areas' => AreaParkir::whereColumn('terisi', '<', 'kapasitas')->get(),
+
+        // 🔥 Kendaraan yang MASIH parkir (belum keluar)
+        'kendaraanAktif' => Transaksi::whereNull('waktu_keluar')
+            ->with('area')
+            ->get()
+            ->keyBy('id_kendaraan'),
+    ]);
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -55,7 +71,7 @@ class TransaksiController extends Controller
             'waktu_masuk' => 'nullable|datetime',
             'waktu_keluar' => 'nullable|datetime|after:waktu_masuk',
             'id_tarif' => 'required|exists:tarifs,id',
-            'id_area' => 'required|exists:area__parkirs,id',
+            'id_area' => 'required|exists:area_parkirs,id',
             'durasi_jam' => 'nullable|integer|min:0',
             'biaya_total' => 'nullable|decimal:10,0',
             'status' => 'nullable|in:masuk,keluar',
@@ -77,21 +93,40 @@ class TransaksiController extends Controller
         }
 
         // Cek apakah kendaraan sudah dalam status parkir
-        $masihParkir = Transaksi::where('id_kendaraan', $validated['id_kendaraan'])
-            ->where('status', 'masuk')
-            ->exists();
+            $transaksiAktif = Transaksi::with('areaParkir')
+                ->where('id_kendaraan', $validated['id_kendaraan'])
+                ->where('status', 'masuk')
+                ->first();
 
-        if ($masihParkir) {
+
+        if ($transaksiAktif) {
+
+        // Jika kendaraan masih parkir di area LAIN
+        if ($transaksiAktif->id_area != $validated['id_area']) {
             return back()
                 ->withInput()
-                ->with('error', 'Kendaraan ' . $kendaraan->plat_nomor . ' masih dalam status parkir!');
+                ->with('error',
+                    'Kendaraan ' . $kendaraan->plat_nomor .
+                    ' masih berada di area parkir ' .
+                    $transaksiAktif->area->nama_area
+                );
         }
+
+        // Jika masih parkir di area yang sama
+        return back()
+            ->withInput()
+            ->with('error',
+                'Kendaraan ' . $kendaraan->plat_nomor .
+                ' masih terdaftar masuk di area ini'
+            );
+        }
+
 
         // Simpan transaksi
         Transaksi::create([
             'id_kendaraan' => $validated['id_kendaraan'],
-            'id_tarif' => $validated['id_tarif'],
             'id_area' => $validated['id_area'],
+            'id_tarif' => $validated['id_tarif'],
             'id_user' => Auth::user()->id,
             'waktu_masuk' => now(),
             'status' => 'masuk',
@@ -149,49 +184,69 @@ class TransaksiController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $validated = $request->validate([
-            'id_kendaraan' => 'sometimes|exists:kendaraans,id',
-            'id_tarif' => 'sometimes|exists:tarifs,id',
-            'status' => 'sometimes|in:masuk,keluar',
-            'id_area' => 'sometimes|exists:area__parkirs,id'
+{
+    $validated = $request->validate([
+        'id_kendaraan' => 'required|exists:kendaraans,id',
+        'id_area' => 'required|exists:area_parkirs,id',
+    ]);
+
+    $validated['waktu_keluar'] = now();
+
+    try {
+        DB::beginTransaction();
+
+        $transaksi = Transaksi::with(['kendaraan', 'area'])->findOrFail($id);
+
+        // Ambil kendaraan
+        $kendaraan = Kendaraan::findOrFail($validated['id_kendaraan']);
+
+        // Cari tarif sesuai area & jenis kendaraan
+        $tarif = Tarif::where('area_parkir_id', $validated['id_area'])
+            ->where('jenis_kendaraan', $kendaraan->jenis_kendaraan)
+            ->firstOrFail();
+
+        // Hitung durasi
+        $waktuMasuk  = Carbon::parse($transaksi->waktu_masuk);
+        $waktuKeluar = Carbon::parse($validated['waktu_keluar']);
+
+        $durasiJam = ceil($waktuMasuk->diffInMinutes($waktuKeluar) / 60);
+        $biayaTotal = $durasiJam * $tarif->tarif_per_jam;
+
+        // Data yang diupdate
+        $transaksi->update([
+            'id_kendaraan' => $validated['id_kendaraan'],
+            'id_area'      => $validated['id_area'],
+            'id_tarif'     => $tarif->id,
+            'durasi_jam'   => $durasiJam,
+            'biaya_total'  => $biayaTotal,
+            'status'       => 'keluar',
+            'waktu_keluar' => $validated['waktu_keluar'],
         ]);
 
-        $validated['waktu_keluar'] = now();
+        // Kurangi slot area parkir
+        $transaksi->area()->decrement('terisi');
 
-        try {
-            DB::beginTransaction();
+        LogAktivitas::create([
+            'id_user' => Auth::id(),
+            'aktivitas' => 'Kendaraan keluar: ' 
+                . $kendaraan->plat_nomor 
+                . ' - Area: ' 
+                . $transaksi->area->nama_area,
+            'waktu_aktivitas' => now(),
+        ]);
 
-            $transaksi = Transaksi::with('tarif')->findOrFail($id);
-            
-            $waktuMasuk = Carbon::parse($transaksi->waktu_masuk);
-            $waktuKeluar = Carbon::parse($validated['waktu_keluar']);
-
-            $durasiJam = ceil($waktuMasuk->diffInMinutes($waktuKeluar) / 60);
-
-            $tarifPerJam = $transaksi->tarif->tarif_per_jam;
-            $biayaTotal = $durasiJam * $tarifPerJam;
-
-            $validated['durasi_jam'] = $durasiJam;
-            $validated['biaya_total'] = $biayaTotal;
-            $validated['status']= 'keluar';
-
-            $transaksi->area()->decrement('terisi');
-            $transaksi->update($validated);
-
-            $log = LogAktivitas::create([
-                'id_user' => Auth::user()->id,
-                'aktivitas' => 'Memperbarui transaksi ID' . $id,
-                'waktu_aktivitas' => now()
-            ]);
-
-            DB::commit();
-            return redirect()->route('petugas.transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('petugas.transaksi.index')->with('error', 'Transaksi gagal diperbarui.');
-        }
+        DB::commit();
+        return redirect()
+            ->route('petugas.transaksi.index')
+            ->with('success', 'Transaksi berhasil diperbarui.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()
+            ->route('petugas.transaksi.index')
+            ->with('error', 'Transaksi gagal diperbarui.');
     }
+}
+
 
     /**
      * Remove the specified resource from storage.

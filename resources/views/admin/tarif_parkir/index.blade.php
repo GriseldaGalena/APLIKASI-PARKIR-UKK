@@ -46,12 +46,15 @@
                             Jenis Kendaraan
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                            Area Parkir
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
                             Tarif / Jam
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
                             Dibuat
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500 w-48">
+                        <th class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-neutral-500 w-48">
                             Aksi
                         </th>
                     </tr>
@@ -76,6 +79,11 @@
                                 {{ ucfirst($tarif->jenis_kendaraan) }}
                             </span>
                         </td>
+
+                        <td class="px-6 py-4 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                            {{ $tarif->areaParkir->nama_area ?? '-' }}
+                        </td>
+
 
                         <td class="px-6 py-4 font-semibold text-green-600 dark:text-green-400">
                             Rp {{ number_format($tarif->tarif_per_jam, 0, ',', '.') }}

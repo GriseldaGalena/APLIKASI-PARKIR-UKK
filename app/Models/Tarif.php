@@ -7,4 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Tarif extends Model
 {
     protected $guarded = [];
+
+        public function areaParkir()
+    {
+        return $this->belongsTo(AreaParkir::class);
+    }
 }
+
+
